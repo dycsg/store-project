@@ -1,5 +1,9 @@
 // 1导入路由模块
+import Vue from 'vue';
+// 导入路由模块
 import VueRouter from "vue-router";
+// 使用路由插件
+Vue.use(VueRouter);
 
 // 3导入路由组件
 import MyHome from "../pages/Home"

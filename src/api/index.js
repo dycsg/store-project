@@ -3,7 +3,7 @@ import requires from "./require.js";
 
 // 三级联动接口 git 无参数
 // 发请求： axios返回的结果是promise
-export const reqCategoryLIst = () =>
+export const reqCategoryList = () =>
   requires({
     url: "/api/product/getBaseCategoryList",
     method: "GET",

@@ -108,7 +108,7 @@ export default {
     },
 
     mounted() {
-        console.log(this.$route.path);
+        // console.log(this.$route.path);
     },
 
     methods: {
