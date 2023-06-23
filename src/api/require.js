@@ -14,7 +14,7 @@ const requires = axios.create({
     // 配置对象
     // baseURL: '/api/',
     // 请求超时时间 5m
-    timeout: 5000
+    timeout: 4000
 })
 
 

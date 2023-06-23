@@ -1,15 +1,14 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import Vue from "vue";
+import Vuex from "vuex";
 
-
-Vue.use(Vuex)
+Vue.use(Vuex);
 // 引入小仓库
-import home from './home';
-import search from './search';
+import home from "./home";
+import search from "./search";
 
 export default new Vuex.Store({
-    module: {
-        home,
-        search,
-    }
-})
+  modules: {
+    home,
+    search,
+  },
+});

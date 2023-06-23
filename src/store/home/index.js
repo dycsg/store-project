@@ -16,9 +16,10 @@ const actions = {
   async categoryList({ commit }) {
     // 调用api里面的接口函数调用，获取数据
     let result = await reqCategoryList();
-    console.log(result);
+    // console.log(result);
     if (result.code == 200) {
       commit("CATEGORYLIST", result.data);
+      console.log(result.data);
     }
   },
 };

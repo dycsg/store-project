@@ -6,5 +6,5 @@ import requires from "./require.js";
 export const reqCategoryList = () =>
   requires({
     url: "/api/product/getBaseCategoryList",
-    method: "GET",
+    method: "git",
   });

@@ -52,15 +52,15 @@ export default {
     },
 
     methods: {
+        // 搜索处理函数，用于跳转到搜索组件上 params参数
         goSearch() {
-            this.$router.push({
-                // 把数据传到搜索路由组件身上
-                name: 'MySearch',
-                // 把input身上的数据
-                query: {
-                    k: this.keyWords
-                }
-        })
+            // 把query参数和params参数合并
+            // 判断如果这里有query参数就也把它带过去
+            if(this.$route.query){
+                let location = {name: 'MySearch',params: { keyWords: this.keyWords || undefined}}
+                location.query = this.$route.query
+                this.$router.push(location)
+            }
         }
     },
 };

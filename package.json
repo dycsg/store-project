@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -13,6 +13,8 @@
     "element-ui": "^2.15.13",
     "less": "^3.13.1",
     "less-loader": "^8.1.1",
+    "lodash": "^4.17.21",
+    "mock.js": "^0.2.0",
     "nprogress": "^0.2.0",
     "swiper": "^9.3.2",
     "vue": "^2.6.14",
