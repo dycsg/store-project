@@ -3,6 +3,8 @@
     <div class="type-nav">
         <!-- {{ categoryList }} -->
             <div class="container" v-show="show" @mouseenter="enterShow" @mouseleave="leaveShow">
+                <!-- 事件委托 -->
+                <div @mouseleave="leaveIndex"> 
                 <h2 class="all">全部商品分类</h2>
                 <nav class="nav">
                     <a href="###">服装城</a>
@@ -17,8 +19,8 @@
                 <div class="sort">
                     <!-- 利用时间委派+编程式导航实现路由跳转和传递参数 -->
                     <div class="all-sort-list2" @click="goSearch(e)">
-                        <div class="item" v-for="c1 in categoryList" :key="c1.categoryId">
-                            <h3>
+                        <div class="item" v-for="(c1,index) in categoryList" :key="c1.categoryId" :class="{ cur: currentIndex==index }">
+                            <h3 @mouseenter="changeIndex(index)" >
                                 <!-- 在每一个列表的a标签添加两个自定义属性用来判断点击的是那个 -->
                                 <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{ c1.categoryName }}</a>
                             </h3>
@@ -39,6 +41,7 @@
                         </div>
                     </div>
                 </div>
+                </div>
             </div>
     </div>
 </template>
@@ -53,6 +56,7 @@ export default {
 
     data() {
         return {
+            currentIndex: -1,
             show: true,
         };
     },
@@ -60,7 +64,7 @@ export default {
     // 组件挂载完毕，可以向服务器发请求
     mounted() {
         // 控制全部商品分类是否显示隐藏 如果不是home组件就隐藏
-        if(this.$router.path!='/home'){
+        if(this.$router.path!='/Myhome'){
             this.show = false
         }
     },
@@ -69,12 +73,19 @@ export default {
             // 当使用这个计算属性以后这个函数会立即执行一次
             // 其中state参数是大仓库的数据
             categoryList:(state) => {
-                console.log(state);
+                // console.log(state);
                 return state.home.categoryList
             }
         })
     },
     methods: {
+        changeIndex(index){
+            this.currentIndex = index
+        },
+        leaveIndex(){
+            this.currentIndex = -1
+        },  
+
         goSearch(event){
             let element = event.target
             // console.log('::',element);
@@ -109,7 +120,7 @@ export default {
         // 鼠标离开时隐藏 全部商品分类 组件
         leaveShow() {
             // 判断如果是在搜索组件上才会执行隐藏
-            if(this.$router.path!= '/home'){
+            if(this.$router.path!= '/Myhome'){
                 this.show = false
             }
         }
@@ -247,7 +258,10 @@ export default {
             // 定义动画时间，数度
             .sort-enter-active{
                 transition: all .4s linear;
-            } 
+            }
+            .cur{
+                background-color: skyblue;
+            }
         }
     }
 </style>

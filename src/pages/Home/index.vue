@@ -5,8 +5,9 @@
         <ListContainer/>
         <TodayRecommend/>
         <RanK/>
-        <FlooR/>
-        <FlooR/>
+        <FlooR v-for="(floor) in floorList" :key="floor.id" :list="floor"/>
+        <!-- :list传递给FlooR组件 props接收 -->
+        <!-- <FlooR/> -->
         <BranD/>
     </div>
 </template>
@@ -17,7 +18,7 @@ import TodayRecommend from '@/pages/Home/TodayRecommend'
 import RanK from '@/pages/Home/RanK'
 import FlooR from '@/pages/Home/FlooR'
 import BranD from '@/pages/Home/BranD'
-
+import { mapState } from 'vuex'
 
 export default {
     name: 'MyHome',
@@ -34,9 +35,13 @@ export default {
         BranD
     },
     mounted() {
-        
+        this.$store.dispatch('getFloorList')
     },
-
+    computed: {
+        ...mapState({
+            floorList:(state) => {return state.home.floorList}
+        })
+    },
     methods: {
         
     },

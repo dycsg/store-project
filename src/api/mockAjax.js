@@ -12,7 +12,7 @@ import "nprogress/nprogress.css"
 // 创建实例
 const requires = axios.create({
     // 配置对象
-    baseURL: '/api',
+    baseURL: '/mock',
     // 请求超时时间 5m
     timeout: 4000
 })
