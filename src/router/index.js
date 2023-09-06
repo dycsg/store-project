@@ -44,30 +44,30 @@ const router = new VueRouter({
         // 配置重定向
         {
             path: "/",
-            redirect: "/MyHome",
+            redirect: "/myhome",
         },
         {
-            path: "/Myhome",
-            name: 'Myhome',
+            path: "/myhome",
+            name: 'myhome',
             component: MyHome,
             meta: {'isShow': true, 'title': '主页'},
             children: []
         },
         {
-            path: "/MyLogin",
-            name: 'MyLogin',
+            path: "/mylogin",
+            name: 'mylogin',
             component: MyLogin,
             meta: {'isShow': false, 'title': '登入'}
         },
         {
-            path: "/MyRegister",
-            name: 'MyRegister',
+            path: "/myregister",
+            name: 'myregister',
             component: MyRegister,
             meta: {'isShow': false, 'title': '注册'}
         },
         {
-            path: "/MySearch",
-            name: 'MySearch',
+            path: "/mysearch/:keyword?",
+            name: 'mysearch',
             component: MySearch,
             meta: {'isShow': true, 'title': '搜索'}
         }

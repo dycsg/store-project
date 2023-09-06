@@ -3,7 +3,7 @@
     <MyHeader/>
     <!-- 呈现路由组件内容 -->
     <router-view></router-view>
-    <MyFooter v-show="$route.meta.isShow"></MyFooter>
+    <MyFooter/>
   </div>
 </template>
 
@@ -15,7 +15,7 @@ export default {
   name: 'App',
   components: {
     MyFooter,
-    MyHeader
+    MyHeader,
   },
   mounted() {
     // 通知Vuex发请求，获取数据，存储于store中的home仓库中

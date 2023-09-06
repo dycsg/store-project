@@ -6,7 +6,7 @@
                 <!-- 事件委托 -->
                 <div @mouseleave="leaveIndex"> 
                 <h2 class="all">全部商品分类</h2>
-                <nav class="nav">
+                <nav class="nav" >
                     <a href="###">服装城</a>
                     <a href="###">美妆馆</a>
                     <a href="###">尚品汇超市</a>
@@ -18,13 +18,13 @@
                 </nav>
                 <div class="sort">
                     <!-- 利用时间委派+编程式导航实现路由跳转和传递参数 -->
-                    <div class="all-sort-list2" @click="goSearch(e)">
+                    <div class="all-sort-list2" @click="goSearch">
                         <div class="item" v-for="(c1,index) in categoryList" :key="c1.categoryId" :class="{ cur: currentIndex==index }">
                             <h3 @mouseenter="changeIndex(index)" >
                                 <!-- 在每一个列表的a标签添加两个自定义属性用来判断点击的是那个 -->
                                 <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{ c1.categoryName }}</a>
                             </h3>
-                            <div class="item-list clearfix">
+                            <div class="item-list clearfix" :style="{ display: currentIndex == index ? 'block' : 'none'}">
                                 <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
                                     <dl class="fore">
                                         <dt>
@@ -50,10 +50,8 @@
 import { mapState } from 'vuex';
 // 节流 按需引入 使用的export default的方式所以不需要加{}号 使用：函数:throttle(function(){函数体},50)
 // import throttle from 'lodash/throttle';
-
 export default {
     name: 'TypeNav',
-
     data() {
         return {
             currentIndex: -1,
@@ -64,7 +62,8 @@ export default {
     // 组件挂载完毕，可以向服务器发请求
     mounted() {
         // 控制全部商品分类是否显示隐藏 如果不是home组件就隐藏
-        if(this.$router.path!='/Myhome'){
+        if(this.$router.history.current.path!='/myhome'){
+            // console.log(this.$router.history.current.path);
             this.show = false
         }
     },
@@ -87,13 +86,14 @@ export default {
         },  
 
         goSearch(event){
-            let element = event.target
-            // console.log('::',element);
+            // console.log(event);
+            const element = event.target
+            // console.log(element.dataset);
             let { categoryname, category1id, category2id, category3id } = element.dataset
             // 判断点击的是否有categoryname这个属性 如果有那我点击的一定是a标签
             if (categoryname) {
                 // 整理路由跳转参数
-                let location = { name: "MySearch" };
+                let loction = { name: "mysearch" };
                 let query = { categoryName: categoryname};
                 // 判断是否为1级分类，二级分类，三级分类的a标签
                 if (category1id) {
@@ -105,11 +105,11 @@ export default {
                 }
                 // 判断，再路由跳转的时候，如果这里有params参数，就也带过去
                 if(this.$route.params) {
-                    location.params = this.$route.params
+                    loction.params = this.$route.params
                     // 动态的给location配置对象添加query属性
-                    location.query = query
+                    loction.query = query
                     // 路由跳转
-                    this.$router.push(location)
+                    this.$router.push(loction, )
                 }
             }
         },
@@ -120,7 +120,7 @@ export default {
         // 鼠标离开时隐藏 全部商品分类 组件
         leaveShow() {
             // 判断如果是在搜索组件上才会执行隐藏
-            if(this.$router.path!= '/Myhome'){
+            if(this.$router.history.current.path!= '/myhome'){
                 this.show = false
             }
         }

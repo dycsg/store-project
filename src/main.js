@@ -5,8 +5,8 @@ import App from "./App.vue";
 import TypeNav from "@/components/TypeNav";
 import CarouseL from "@/components/CarouseL";
 // 第一个参数全局组件的名字 第二个 组件的名称
-Vue.component(TypeNav.name, TypeNav);
 Vue.component(CarouseL.name, CarouseL)
+Vue.component(TypeNav.name, TypeNav);
 // 引入路由插件
 import router from "@/router";
 // 到入vuex
@@ -20,6 +20,10 @@ import 'swiper/css/swiper.css';
 
 new Vue({
   render: (h) => h(App),
+  // 配置全局事件总线
+  beforeCreate() {
+    Vue.prototype.$bus = this;
+  },
   // 使用路由插件 使每个组件都有$route和$router路由器属性
   router,
   // 注册vuex
