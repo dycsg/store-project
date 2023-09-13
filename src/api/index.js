@@ -19,3 +19,10 @@ export const reqFloorList = () => {
 export const reqGetSearchInfo = (params) => {
   return requests({ url: "/list", method: "POST", data: params });
 };
+// 商品详情接口    /api/item/{ skuId}
+export const reqGoodsInfo = (skuId) =>
+  requests({ url: `/item/${skuId}`, method: "GET" });
+// 购物车接口
+export const reqcartList = () => {
+  return requests({ url: "/cart/cartList", method: "GET"})
+}

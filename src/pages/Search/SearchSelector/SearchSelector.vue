@@ -4,7 +4,7 @@
       <div class="fl key brand">品牌</div>
       <div class="value logos">
         <ul class="logo-list">
-          <li v-for="trademark in trademarkList" :key="trademark.tmId" @click="trademarkHandler">
+          <li v-for="trademark in trademarkList" :key="trademark.tmId" @click="trademarkHandler(trademark)">
             {{ trademark.tmName }}
           </li>
         </ul>
@@ -15,10 +15,12 @@
       </div>
     </div>
     <div class="type-wrap" v-for="attrs in attrsList" :key="attrs.attrId">
+      <!-- 详情信息属性 -->
       <div class="fl key">{{ attrs.attrName }}</div>
       <div class="fl value">
         <ul class="type-list">
-          <li v-for="(attrValue, index) in attrs.attrValueList" :key="index">
+          <!-- 详情信息属性值 -->
+          <li v-for="(attrValue, index) in attrs.attrValueList" :key="index" @click="attrsHandler(attrs,attrValue)">
             <a>{{ attrValue }}</a>
           </li>
         </ul>
@@ -36,8 +38,14 @@ export default {
     ...mapGetters(["trademarkList", "attrsList"]),
   },
   methods: {
-    trademarkHandler(){
-      
+    trademarkHandler(trademark){
+      // 去父组件用@加事件名定义事件然后把事件名传过去trademarkInfo，再加上要传的数据trademark
+      this.$emit('trademarkInfo', trademark)
+    },
+    attrsHandler(attrs,attrValue) {
+      // console.log('111');
+      // console.log(attrs, attrValue);
+      this.$emit('attrsInfo', attrs,attrValue)
     }
   }
 };

@@ -22,34 +22,58 @@
             </li>
             <!-- 品牌面包屑 -->
             <li class="with-x" v-if="searchParams.trademark">
-              {{ searchParams.trademark }}<i @click="removetrademark">×</i>
+              <!-- 用slice切割数组 加上第0位 直接写trademark返回的是id:name -->
+              {{ searchParams.trademark.split(":")[1]
+              }}<i @click="removetrademark">×</i>
+            </li>
+            <!-- 详情信息面包屑 -->
+            <li
+              class="with-x"
+              v-for="(attrValue, index) in searchParams.props"
+              :key="index"
+            >
+              <!-- 用slice切割数组 加上第0位 直接写trademark返回的是id:name -->
+              {{ attrValue.split(":")[1]
+              }}<i @click="removeattrValue(index)">×</i>
             </li>
           </ul>
         </div>
         <!--selector品牌-->
-        <SearchSelector @trademarkInfo="trademarkInfo"/>
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrsInfo="attrsInfo" />
         <!--details详情-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{ active: isOne }" @click="changeOrder('1')">
+                  <a
+                    >综合<i
+                      v-show="{ isOne }"
+                      class="iconfont icon-zonghepaixu"
+                      style="font-size: 10px"
+                    ></i
+                  ></a>
                 </li>
                 <li>
-                  <a href="#">销量</a>
+                  <a>销量<i class="iconfont icon-xiaoliangyuce"></i></a>
                 </li>
                 <li>
-                  <a href="#">新品</a>
+                  <a>新品<i class="iconfont icon-new"></i></a>
                 </li>
                 <li>
-                  <a href="#">评价</a>
+                  <a>评价<i class="iconfont icon-pingjia"></i></a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{ active: isFour }" @click="changeOrder('2')">
+                  <a
+                    >价格<i
+                      v-show="{ isFour }"
+                      class="iconfont"
+                      :class="{
+                        'icon-jiantou_qiehuanxiangshang': isAsc,
+                        'icon-jiantou_qiehuanxiangxia': isDesc,
+                      }"
+                    ></i
+                  ></a>
                 </li>
               </ul>
             </div>
@@ -61,9 +85,10 @@
               <li class="yui3-u-1-5" v-for="item in goodsList" :key="item.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank"
-                      ><img :src="item.defaultImg"
-                    /></a>
+                    <!-- 在路由path:占位 这里把商品的id传过去 -->
+                    <router-link :to="`/detail/${item.id}`">
+                      <img :src="item.defaultImg" alt="" />
+                    </router-link>
                   </div>
                   <div class="price">
                     <strong>
@@ -72,12 +97,7 @@
                     </strong>
                   </div>
                   <div class="attr">
-                    <a
-                      target="_blank"
-                      href="item.html"
-                      title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】"
-                      >{{ item.title }}</a
-                    >
+                    <a target="_blank" href="item.html" title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】">{{ item.title }}</a>
                   </div>
                   <div class="commit">
                     <i class="command">已有<span>2000</span>人评价</i>
@@ -98,35 +118,13 @@
             </ul>
           </div>
           <!-- 分页器 -->
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <PaginaTion
+            :pageNo="searchParams.pageNo"
+            :pageSize="searchParams.pageSize"
+            :total="total"
+            :continues="5"
+            @getpageNo="getpageNo"
+          />
         </div>
       </div>
     </div>
@@ -134,8 +132,9 @@
 </template>
 
 <script>
+// icon-jiantou_qiehuanxiangshang icon-jiantou_qiehuanxiangxia
 import SearchSelector from "./SearchSelector/SearchSelector";
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 export default {
   name: "MySearch",
 
@@ -150,11 +149,11 @@ export default {
         category2Id: "", //二级分类id
         category3Id: "", //三级分类id
         categoryName: "", //分类名字
-        order: "", //排序
+        order: "1:desc", //排序
         keyword: "", //搜索关键字
         props: [], // 商品各种详情参数
         pageNo: 1, //分页器，第几页
-        pageSize: 10, // 展示个数
+        pageSize: 3, // 展示个数
         trademark: "", //  品牌
       },
     };
@@ -170,6 +169,25 @@ export default {
   },
   computed: {
     ...mapGetters(["goodsList"]), //注意数据格式
+    // 计算排序
+    isOne() {
+      // 判断order是否有1这个元素 如果没有就返回-1
+      return this.searchParams.order.indexOf("1") != -1;
+    },
+    isFour() {
+      return this.searchParams.order.indexOf("2") != -1;
+    },
+    // 计算样式 价格上下
+    isAsc() {
+      return this.searchParams.order.indexOf("asc") != -1;
+    },
+    isDesc() {
+      return this.searchParams.order.indexOf("desc") != -1;
+    },
+    // 获取分页器数据
+    ...mapState({
+      total: (state) => state.search.searchList.total,
+    }),
   },
   methods: {
     // 封装成一个函数，要用的话就调用就好了
@@ -197,12 +215,75 @@ export default {
       // 通知Myheader组件清空input框搜索关键字
       this.$bus.$emit("clear");
       // 路由跳转
-      this.$router.push({ name: 'mysearch', query: this.$route.query})
+      this.$router.push({ name: "mysearch", query: this.$route.query });
       // console.log(this.$route.query);
     },
-    removetrademark(){
-
-    }
+    // 品牌自定义事件
+    trademarkInfo(trademark) {
+      // 接收到子组件传过来的数据
+      // console.log(trademark);
+      // 整理传过来的参数格式是"id:品牌" 再赋值给它
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+      // 发请求获取品牌数据
+      this.getData();
+    },
+    // 删除品牌
+    removetrademark() {
+      // 置空
+      this.searchParams.trademark = undefined;
+      // 调接口
+      this.getData();
+    },
+    // 详情信息自定义事件
+    attrsInfo(attrs, attrValue) {
+      // console.log(attrs, attrValue);
+      // 整理传过来的参数格式是数组
+      let props = `${attrs.attrId}:${attrValue}:${attrs.attrName}`; //中间的attrValue是从子组件传过来的所有不需要加attrs
+      // 数组去重 防止重复点击
+      if (this.searchParams.props.indexOf(props) == -1) {
+        // 再重新push到本地data的props
+        this.searchParams.props.push(props);
+      }
+      // console.log(this.searchParams.props);
+      this.getData();
+    },
+    // 删除详情信息面包屑
+    removeattrValue(index) {
+      // 删除数组元素 用索引值index   上面传过来    接收   使用 和只删除一个
+      this.searchParams.props.splice(index, 1);
+      // 调接口
+      this.getData();
+    },
+    changeOrder(flag) {
+      // flag形参：它是一个标记，代表用户点击的是综合1，价格2 用户点击的时候传过来的
+      // console.log(flag);
+      // let originOrder = this.searchParams.order   //初始值
+      let originFlag = this.searchParams.order.split(":")[0]; // 1或2
+      let originSort = this.searchParams.order.split(":")[1]; // asc或desc
+      // console.log( originOrder,originFlag,originSort);
+      let newOrder = "";
+      // 判断点击的是综合
+      if (flag == originFlag) {
+        // alert('综合')
+        newOrder = `${originFlag}:${originSort == "desc" ? "asc" : "desc"}`;
+        // console.log(newOrder);
+      } else {
+        // 点击的是价格
+        newOrder = `${flag}:${"desc"}`;
+      }
+      // 将新的order赋值给searchParams
+      this.searchParams.order = newOrder;
+      // 再次发请求
+      this.getData();
+    },
+    // 获取分页器pageNo数据 发请求
+    getpageNo(pageNo) {
+      // console.log(pageNo);
+      // 整理服务器传过来的参数
+      this.searchParams.pageNo = pageNo;
+      // 调接口
+      this.getData();
+    },
   },
   watch: {
     $route() {
@@ -219,6 +300,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.iconfont {
+  font-size: 14px;
+}
 .main {
   margin: 10px 0;
 
@@ -457,93 +541,6 @@ export default {
                 }
               }
             }
-          }
-        }
-      }
-
-      .page {
-        width: 733px;
-        height: 66px;
-        overflow: hidden;
-        float: right;
-
-        .sui-pagination {
-          margin: 18px 0;
-
-          ul {
-            margin-left: 0;
-            margin-bottom: 0;
-            vertical-align: middle;
-            width: 490px;
-            float: left;
-
-            li {
-              line-height: 18px;
-              display: inline-block;
-
-              a {
-                position: relative;
-                float: left;
-                line-height: 18px;
-                text-decoration: none;
-                background-color: #fff;
-                border: 1px solid #e0e9ee;
-                margin-left: -1px;
-                font-size: 14px;
-                padding: 9px 18px;
-                color: #333;
-              }
-
-              &.active {
-                a {
-                  background-color: #fff;
-                  color: #e1251b;
-                  border-color: #fff;
-                  cursor: default;
-                }
-              }
-
-              &.prev {
-                a {
-                  background-color: #fafafa;
-                }
-              }
-
-              &.disabled {
-                a {
-                  color: #999;
-                  cursor: default;
-                }
-              }
-
-              &.dotted {
-                span {
-                  margin-left: -1px;
-                  position: relative;
-                  float: left;
-                  line-height: 18px;
-                  text-decoration: none;
-                  background-color: #fff;
-                  font-size: 14px;
-                  border: 0;
-                  padding: 9px 18px;
-                  color: #333;
-                }
-              }
-
-              &.next {
-                a {
-                  background-color: #fafafa;
-                }
-              }
-            }
-          }
-
-          div {
-            color: #333;
-            font-size: 14px;
-            float: right;
-            width: 241px;
           }
         }
       }
