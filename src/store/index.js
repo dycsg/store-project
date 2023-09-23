@@ -6,13 +6,14 @@ Vue.use(Vuex);
 import home from "./home";
 import search from "./search";
 import detail from "./detail";
-import shocpart from "./shocpart";
+import shopcart from "./shopcart";
+import user from "./user";
 
 export default new Vuex.Store({
   modules: {
     home,
     search,
     detail,
-    shocpart
-  },
-});
+    shopcart,
+    user
+  },});

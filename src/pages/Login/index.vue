@@ -40,10 +40,10 @@
 							</form>
 							<div class="call clearFix">
 								<ul>
-									<li><img src="images/qq.png" alt=""></li>
-									<li><img src="images/sina.png" alt=""></li>
-									<li><img src="images/ali.png" alt=""></li>
-									<li><img src="images/weixin.png" alt=""></li>
+									<li><img src="./images/qq.png" alt=""></li>
+									<li><img src="./images/sina.png" alt=""></li>
+									<li><img src="./images/ali.png" alt=""></li>
+									<li><img src="./images/weixin.png" alt=""></li>
 								</ul>
 								<a href="##" class="register">立即注册</a>
 							</div>

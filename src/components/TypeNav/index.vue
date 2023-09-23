@@ -6,7 +6,7 @@
                 <!-- 事件委托 -->
                 <div @mouseleave="leaveIndex"> 
                 <h2 class="all">全部商品分类</h2>
-                <nav class="nav" >
+                <nav class="nav">
                     <a href="###">服装城</a>
                     <a href="###">美妆馆</a>
                     <a href="###">尚品汇超市</a>
@@ -156,6 +156,10 @@ export default {
                     line-height: 45px;
                     font-size: 16px;
                     color: #333;
+                    // display: flex;
+                    // justify-content: right;
+                    float: right;
+                    // align-items: center;
                 }
             }
 

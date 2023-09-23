@@ -22,7 +22,21 @@ export const reqGetSearchInfo = (params) => {
 // 商品详情接口    /api/item/{ skuId}
 export const reqGoodsInfo = (skuId) =>
   requests({ url: `/item/${skuId}`, method: "GET" });
-// 购物车接口
-export const reqcartList = () => {
-  return requests({ url: "/cart/cartList", method: "GET"})
-}
+
+// 添加商品到购物车接口 /api/cart/addToCart/{ skuId }/{ skuNum }
+export const reqAddOrUpdateShopCart = (skuId, skuNum) =>requests({url: `/cart/addToCart/${ skuId }/${ skuNum }`,method: "POST"})
+
+// 购物车接口  获取购物车数据不用传数据
+export const reqCartList = () => requests({ url: "/cart/cartList", method: "GET"})
+
+// 删除购物车产品/api/cart/deleteCart/{skuId}
+export const reqDeleteCartById = (skuId) =>requests({ url: `/cart/deleteCart/${skuId}`, method: 'DELETE'})
+
+// 修改产品的选中状态 /api/cart/checkCart/{skuID}/{isChecked}
+export const reqUpdateCheckedById = (skuId, isChecked) => requests({url: `/cart/checkCart/${skuId}/${isChecked}`,method: "get"})
+
+// 获取验证码 /api/user/passport/snedCode/phone
+export const reqGetCode = (phone) => requests({url: `/user/passport/sendCode/${phone}`,method: 'GET'})
+
+// 注册用户 /api/user/passport/register     带一个参数的总和
+export const reqUserRegister = (data) => requests( {url:  `/user/passport/register`,data, method: 'POST'})

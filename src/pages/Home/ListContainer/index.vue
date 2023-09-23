@@ -33,7 +33,7 @@
             </li>
             <li class="life-item">
               <i class="list-item"></i>
-              <span class="service-intro">电影票</span>
+              <span class="service-intro" @click="goMovie">电影票</span>
             </li>
             <li class="life-item">
               <i class="list-item"></i>
@@ -97,6 +97,11 @@ export default {
       },
     }),
   },
+  methods: {
+    goMovie() {
+      this.$router.push("/movie")
+    }
+  }
 };
 </script>
 

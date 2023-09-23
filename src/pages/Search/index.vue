@@ -104,7 +104,7 @@
                   </div>
                   <div class="operate">
                     <a
-                      href="success-cart.html"
+                      @click="addShopCart"
                       target="_blank"
                       class="sui-btn btn-bordered btn-danger"
                       >加入购物车</a
@@ -166,6 +166,7 @@ export default {
   },
   mounted() {
     this.getData();
+
   },
   computed: {
     ...mapGetters(["goodsList"]), //注意数据格式
@@ -283,6 +284,36 @@ export default {
       this.searchParams.pageNo = pageNo;
       // 调接口
       this.getData();
+    },
+
+     // 添加购物车事件     回调要么成功要么失败 pormise
+     async addShopCart() {
+      // 发请求 路由里的事件 把我们的skuid skunum传过去          当前组件上的skuid skunum
+      // console.log(result);
+      // 成功干什么 失败干什么跟if差不多AddOrUpdateShopCart
+      try {
+        //成功干什么
+        await this.$store.dispatch("addOrUpdateShopCart", {
+          skuId: this.$route.params.skuid,
+          skuNum: this.skuNum,
+        });
+        // 路由跳转
+        this.$router.push({
+          name: "addcartsuccess",
+          query: { skuNum: this.skuNum },
+        });
+        // 简单数据用query传过去，复杂数据用会话存储但是不能直接存要进行转换、
+        sessionStorage.setItem("SKUINFO", JSON.stringify(this.skuInfo));
+      } catch (error) {
+        // 路由跳转
+        this.$router.push({
+          name: "addcartsuccess",
+          query: { skuNum: this.skuNum },
+        });
+        // 简单数据用query传过去，复杂数据用会话存储但是不能直接存要进行转换、
+        sessionStorage.setItem("SKUINFO", JSON.stringify(this.skuInfo));
+        console.log(error.message);
+      }
     },
   },
   watch: {

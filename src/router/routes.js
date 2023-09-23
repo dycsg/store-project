@@ -5,10 +5,23 @@ import MyRegister from "../pages/Register"
 import MySearch from "../pages/Search"    
 import Detail from "../pages/Detail"     //详情页
 import ShopCart from "../pages/ShopCart"
-
+import AddCartSuccess from "../pages/AddCartSuccess"
+import MoviE from "../pages/Home/MoviE"
 
 export default [
     // 配置重定向
+    {
+        path: "/shopcart",
+        component: ShopCart,
+        name: 'ShopCart',
+        meta: {"isShow": true, 'title': ''}
+    },
+    {
+        path: "/addcartsuccess",
+        name: "addcartsuccess",
+        component: AddCartSuccess,
+        meta: {'isShow': true}
+    },
     {
         path: '/detail/:skuid', //详情页
         component: Detail,
@@ -24,6 +37,10 @@ export default [
         component: MyHome,
         meta: {'isShow': true, 'title': '主页'},
         children: []
+    },
+    {
+        path: "/movie",
+        component: MoviE,
     },
     {
         path: "/mylogin",
@@ -43,10 +60,7 @@ export default [
         component: MySearch,
         meta: {'isShow': true, 'title': '搜索'},
     },
-    {
-        path: "/shocpart",
-        component: ShopCart,
-        meta: {"isShow": true, 'title': '购物车'}
-    }
+    
+    
    
 ]
