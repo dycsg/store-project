@@ -5,7 +5,7 @@
       <h3>
         注册新用户
         <span class="go"
-          >我有账号，去 <a href="login.html" target="_blank">登陆</a>
+          >我有账号，去 <router-link to="/mylogin">登陆</router-link>
         </span>
       </h3>
       <div class="content">
@@ -64,7 +64,7 @@ export default {
   data() {
     return {
       phone: "",
-      code: "",
+      code: '',
       password: "",
       password1: "",
       agree: true
@@ -88,7 +88,7 @@ export default {
     // 完成注册
     async userRegister(){
      try {
-      const   { phone, code, password, password1 } = this;
+      const { phone, code, password, password1 } = this;
       (phone&&code&&password==password1) && await this.$store.dispatch("userRegister",{phone, code, password})  // 如果前面的有数据才会执行后面这个派发
       this.$router.push("/mylogin")
      } catch (error) {

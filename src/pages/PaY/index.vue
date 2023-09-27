@@ -83,7 +83,7 @@
 
 <script>
   export default {
-    name: 'Pay',
+    name: 'PaY',
   }
 </script>
 

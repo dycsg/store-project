@@ -7,9 +7,19 @@ import Detail from "../pages/Detail"     //详情页
 import ShopCart from "../pages/ShopCart"
 import AddCartSuccess from "../pages/AddCartSuccess"
 import MoviE from "../pages/Home/MoviE"
+import TradE from "../pages/TradE"
+import PaY from "../pages/PaY"
 
 export default [
     // 配置重定向
+    {
+        path: '/pay',
+        component: PaY
+    },
+    {
+        path: '/trade',
+        component: TradE,
+    },
     {
         path: "/shopcart",
         component: ShopCart,
@@ -60,6 +70,10 @@ export default [
         component: MySearch,
         meta: {'isShow': true, 'title': '搜索'},
     },
+    {
+        path: '/movie',
+        component: MoviE,
+    }
     
     
    

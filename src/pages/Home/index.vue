@@ -33,7 +33,10 @@ export default {
     BranD,
   },
   mounted() {
+    // 获取floor数据
     this.$store.dispatch("getFloorList");
+    // 通过token获取用户数据
+    this.$store.dispatch("getUserInfo");
   },
   computed: {
     ...mapState({
