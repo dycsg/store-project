@@ -422,7 +422,7 @@ export default {
         });
         // 简单数据用query传过去，复杂数据用会话存储但是不能直接存要进行转换、
         sessionStorage.setItem("SKUINFO", JSON.stringify(this.skuInfo));
-        console.log(error.message);
+        // console.log(error.message);
       }
     },
   },

@@ -10,30 +10,64 @@
       </h3>
       <div class="content">
         <label>手机号:</label>
-        <input type="text" placeholder="请输入你的手机号" v-model="phone" />
-        <span class="error-msg">错误提示信息</span>
+        <input
+          placeholder="请输入你的手机号"
+          v-model="phone"
+          name="phone"
+          v-validate="{ required: true, regex: /^1\d{10}$/ }"
+          :class="{ invalid: errors.has('phone') }"
+        />
+        <span class="error-msg">{{ errors.first("phone") }}</span>
       </div>
       <div class="content">
         <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码" v-model="code" />
+        <input
+          type="text"
+          placeholder="请输入验证码"
+          v-model="code"
+          name="code"
+          v-validate="{ required: true, regex: /^\d{6}$/ }"
+          :class="{ invalid: errors.has('code') }"
+        />
         <button class="verifyCode" @click="getCode">获取验证码</button>
-        <span class="error-msg">错误提示信息</span>
+        <span class="error-msg">{{ errors.first("code") }}</span>
       </div>
       <div class="content">
         <label>登录密码:</label>
-        <input type="text" placeholder="请输入你的登录密码" v-model="password"/>
-        <span class="error-msg">错误提示信息</span>
+        <input
+          placeholder="请输入你的登录密码"
+          v-model="password"
+          name="password"
+          v-validate="{ required: true, regex: /^[0-9A-Za-z]{6,16}$/ }"
+          :class="{ invalid: errors.has('password') }"
+        />
+        <span class="error-msg">{{ errors.first("password") }}</span>
       </div>
+
       <div class="content">
         <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码" v-model="password1"/>
-        <span class="error-msg">错误提示信息</span>
+        <input
+          placeholder="请输入确认密码"
+          v-model="password1"
+          name="password1"
+          v-validate="{ required: true, is: password }"
+          :class="{ invalid: errors.has('password1') }"
+        />
+        <span class="error-msg">{{ errors.first("password1") }}</span>
       </div>
+
       <div class="controls">
-        <input name="m1" type="checkbox" :checked="agree"/>
+        <input
+          type="checkbox"
+          :checked="agree"
+          name="agree"
+          v-validate="{ required: true, agree: true }"
+          :class="{ invalid: errors.has('agree') }"
+        />
         <span>同意协议并注册《尚品汇用户协议》</span>
-        <span class="error-msg">错误提示信息</span>
+        <span class="error-msg">{{ errors.first("agree") }}</span>
       </div>
+
       <div class="btn">
         <button @click="userRegister">完成注册</button>
       </div>
@@ -51,8 +85,8 @@
         <li>销售联盟</li>
         <li>尚品汇社区</li>
       </ul>
-      <div class="address">地址：北京市昌平区宏福科技园综合楼6层</div>
-      <div class="beian">京ICP备19006430号</div>
+      <div class="address">地址：江西省南昌市安义县科技园综合楼6层</div>
+      <div class="beian">赣ICP备19006430号</div>
     </div>
   </div>
 </template>
@@ -64,10 +98,10 @@ export default {
   data() {
     return {
       phone: "",
-      code: '',
+      code: "",
       password: "",
       password1: "",
-      agree: true
+      agree: true,
     };
   },
 
@@ -80,21 +114,27 @@ export default {
         const { phone } = this;
         phone && this.$store.dispatch("getCode", phone); //如果有phone才会派发回调，获取验证码
         // console.log(this.$store.state)
-        this.code = this.$store.state.user.code;    //再把服务器获取到的验证码 赋值到组件
+        this.code = this.$store.state.user.code; //再把服务器获取到的验证码 赋值到组件
       } catch (error) {
-        alert(error.message)
-      } 
+        alert(error.message);
+      }
     },
     // 完成注册
-    async userRegister(){
-     try {
-      const { phone, code, password, password1 } = this;
-      (phone&&code&&password==password1) && await this.$store.dispatch("userRegister",{phone, code, password})  // 如果前面的有数据才会执行后面这个派发
-      this.$router.push("/mylogin")
-     } catch (error) {
-      alert(error.message)
-     }
-    }
+    async userRegister() {
+      const success = await this.$validator.validateAll(); //收集全部表单验证
+      // console.log(success);   //布尔值
+      if (success) {
+        try {
+            const { phone, code, password } = this;
+            await this.$store.dispatch("userRegister", {phone,code, password,}); // 如果前面的有数据才会执行后面这个派发
+            this.$router.push("/mylogin");
+        } catch (error) {
+          alert(error.message);
+        }
+      }else{
+        alert('请输入正确信息')
+      }
+    },
   },
 };
 </script>

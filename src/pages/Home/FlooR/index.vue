@@ -30,22 +30,22 @@
                         <div class="split">
                             <span class="floor-x-line"></span>
                             <div class="floor-conver-pit">
-                                <img :src="list.recommendList[0]" />
+                                <img v-lazy="list.recommendList[0]" />
                             </div>
                             <div class="floor-conver-pit">
-                                <img :src="list.recommendList[1]" />
+                                <img v-lazy="list.recommendList[1]" />
                             </div>
                         </div>
                         <div class="split center">
-                            <img :src="list.bigImg" />
+                            <img v-lazy="list.bigImg" />
                         </div>
                         <div class="split">
                             <span class="floor-x-line"></span>
                             <div class="floor-conver-pit">
-                                <img :src="list.recommendList[2]" />
+                                <img v-lazy="list.recommendList[2]" />
                             </div>
                             <div class="floor-conver-pit">
-                                <img :src="list.recommendList[3]" />
+                                <img v-lazy="list.recommendList[3]" />
                             </div>
                         </div>
                     </div>

@@ -52,7 +52,7 @@ const actions = {
   //用户登入 token
   async userLogin({ commit }, data) {
     let dyc = await reqUserLogin(data);
-    console.log(dyc);
+    // console.log(dyc);
     if (dyc.code == 200) {
       commit("USERLOGIN", dyc.data.token); //拿到数据
       // 用户已经成功登录并获取到了token,需要持久化存储

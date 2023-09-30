@@ -6,10 +6,10 @@
         <div class="loginform">
           <ul class="tab clearFix">
             <li>
-              <a href="##" style="border-right: 0">扫描登录</a>
+              <a @click="scanCode" style="border-right: 0">扫描登录</a>
             </li>
             <li>
-              <a href="##" class="current">账户登录</a>
+              <a  class="current">账户登录</a>
             </li>
           </ul>
 
@@ -17,14 +17,26 @@
             <form>
               <div class="input-text clearFix">
                 <i></i>
-                <input type="text" placeholder="手机号" v-model="phone" />
-                <span class="error-msg">错误提示信息</span>
+                <input
+                  placeholder="请输入你的手机号"
+                  v-model="phone"
+                  name="phone"
+                  v-validate="{ required: true, regex: /^1\d{10}$/ }"
+                  :class="{ invalid: errors.has('phone') }"
+                />
+                <span class="error-msg">{{ errors.first("phone") }}</span>
               </div>
 
               <div class="input-text clearFix">
                 <i class="pwd"></i>
-                <input type="text" placeholder="请输入密码" v-model="password" />
-                <span class="error-msg">错误提示信息</span>
+                <input
+                  placeholder="请输入你的登录密码"
+                  v-model="password"
+                  name="password"
+                  v-validate="{ required: true, regex: /^[0-9A-Za-z]{6,16}$/ }"
+                  :class="{ invalid: errors.has('password') }"
+                />
+                <span class="error-msg">{{ errors.first("password") }}</span>
               </div>
 
               <div class="setting clearFix">
@@ -32,7 +44,7 @@
                   <input name="m1" type="checkbox" value="2" checked="" />
                   自动登录
                 </label>
-                <span class="forget">忘记密码？</span>
+                <span class="forget" @click="a">忘记密码？</span>
               </div>
               <!-- 阻止默认行为 -->
               <button class="btn" @click.prevent="userLogin">
@@ -41,12 +53,26 @@
             </form>
             <div class="call clearFix">
               <ul>
-                <li><img src="./images/qq.png" alt="" /></li>
-                <li><img src="./images/sina.png" alt="" /></li>
-                <li><img src="./images/ali.png" alt="" /></li>
-                <li><img src="./images/weixin.png" alt="" /></li>
+                <li>
+                  <a href="https://qm.qq.com/q/hIoVShFDAA"
+                    ><img src="./images/qq.png" alt=""
+                  /></a>
+                </li>
+                <li>
+                  <a href="https://ur.alipay.com/_3KgF0FExFG3bOVcXCtv3vS"
+                    ><img src="./images/ali.png" alt=""
+                  /></a>
+                </li>
+                <li>
+                  <a
+                    href="https://kf.qq.com/touch/wechat-product/index.html?scene=wxhelp&randstr=16959759209RI"
+                    ><img src="./images/weixin.png" alt=""
+                  /></a>
+                </li>
               </ul>
-              <a href="##" class="register">立即注册</a>
+              <router-link class="register" to="/myregister"
+                >立即注册</router-link
+              >
             </div>
           </div>
         </div>
@@ -64,13 +90,14 @@
         <li>销售联盟</li>
         <li>尚品汇社区</li>
       </ul>
-      <div class="address">地址：北京市昌平区宏福科技园综合楼6层</div>
-      <div class="beian">京ICP备19006430号</div>
+      <div class="address">地址：江西省南昌市安义县科技园综合楼6层</div>
+      <div class="beian" >赣ICP备19006430号</div>
     </div>
   </div>
 </template>
 
 <script>
+import code from "./images/code.png"
 export default {
   name: "MyLogin",
 
@@ -84,16 +111,46 @@ export default {
   mounted() {},
 
   methods: {
-    // 登入    
+    // 登入
     async userLogin() {
       try {
         const { phone, password } = this;
-		(phone && password) && await this.$store.dispatch("userLogin", {phone,password});
-		this.$router.push("/myhome")
+        phone &&
+          password &&
+          (await this.$store.dispatch("userLogin", { phone, password }));
+        // 跳转到登录
+        // 看路由中是否包含query参数，有就跳转到query参数指定的路由 记录了想去的路由， 没有就正常跳转到myhome
+        // console.log(this.$route.query.redirect);
+        let toPath = this.$route.query.redirect || "/myhome";
+        this.$router.push(toPath);
       } catch (error) {
         alert(error.message);
       }
     },
+    a() {
+      alert("请联系管理员：3501194074");
+    },
+    // 扫码
+    scanCode() {
+        this.$confirm(`<img src="${code}" style="width: 150px; height: 150px;" />`, '扫码登录', {
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          iconClass: 'el-icon-full-screen',
+          center: true
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
+      }
+    
   },
 };
 </script>
@@ -198,6 +255,7 @@ export default {
           }
           .forget {
             float: right;
+            cursor: pointer;
           }
         }
         .btn {

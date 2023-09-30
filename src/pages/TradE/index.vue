@@ -3,10 +3,16 @@
     <h3 class="title">填写并核对订单信息</h3>
     <div class="content">
       <h5 class="receive">收件人信息</h5>
-      <div class="address clearFix" v-for="address in addressInfo" :key="address.id">
+      <div
+        class="address clearFix"
+        v-for="address in addressInfo"
+        :key="address.id"
+      >
         <!-- 进行判断如果address.isDefault的属性值等于1就添加上selected这个类名 -->
-        <span class="username" :class="{ selected: address.isDefault == 1 }">{{address.consignee}}</span>
-        <p @click="changeAddress(address,addressInfo)">
+        <span class="username" :class="{ selected: address.isDefault == 1 }">{{
+          address.consignee
+        }}</span>
+        <p @click="changeAddress(address, addressInfo)">
           <span class="s1">{{ address.userAddress }}</span>
           <span class="s2">{{ address.phoneNum }}</span>
           <span class="s3" v-show="address.isDefault == 1">默认地址</span>
@@ -16,8 +22,19 @@
       <div class="line"></div>
       <h5 class="pay">支付方式</h5>
       <div class="address clearFix">
-        <span class="username" :class="num==1 ? 'selected' : '' " @click="isPay(1)">在线支付</span>
-        <span class="username"  style="margin-left: 5px" :class="num==0 ? 'selected' : '' " @click="isPay(0)">货到付款</span>
+        <span
+          class="username"
+          :class="num == 1 ? 'selected' : ''"
+          @click="isPay(1)"
+          >在线支付</span
+        >
+        <span
+          class="username"
+          style="margin-left: 5px"
+          :class="num == 0 ? 'selected' : ''"
+          @click="isPay(0)"
+          >货到付款</span
+        >
       </div>
       <div class="line"></div>
       <h5 class="pay">送货清单</h5>
@@ -29,10 +46,16 @@
         </div>
       </div>
       <div class="detail">
-        <h5 style="border-bottom: 2px solid #ccc;  margin-bottom: 6px;">商品清单</h5>
-        <ul class="list clearFix" v-for="order in orderInfo.detailArrayList" :key="order.skuId">
+        <h5 style="border-bottom: 2px solid #ccc; margin-bottom: 6px">
+          商品清单
+        </h5>
+        <ul
+          class="list clearFix"
+          v-for="order in orderInfo.detailArrayList"
+          :key="order.skuId"
+        >
           <li>
-            <img :src="order.imgUrl" alt="" class="oredrImg"/>
+            <img :src="order.imgUrl" alt="" class="oredrImg" />
           </li>
           <li>
             <p>
@@ -49,7 +72,11 @@
       </div>
       <div class="bbs">
         <h5>买家留言：</h5>
-        <textarea placeholder="建议留言前先与商家沟通确认" class="remarks-cont"  v-model="massage"></textarea>
+        <textarea
+          placeholder="建议留言前先与商家沟通确认"
+          class="remarks-cont"
+          v-model="massage"
+        ></textarea>
       </div>
       <div class="line"></div>
       <div class="bill">
@@ -61,7 +88,10 @@
     <div class="money clearFix">
       <ul>
         <li>
-          <b><i>{{ orderInfo.totalNum }}</i>件商品，总商品金额</b>
+          <b
+            ><i>{{ orderInfo.totalNum }}</i
+            >件商品，总商品金额</b
+          >
           <span>¥{{ orderInfo.totalAmount }}</span>
         </li>
         <li>
@@ -75,16 +105,18 @@
       </ul>
     </div>
     <div class="trade">
-      <div class="price">应付金额:<span>¥{{ orderInfo.originalTotalAmount }}</span></div>
+      <div class="price">
+        应付金额:<span>¥{{ orderInfo.originalTotalAmount }}</span>
+      </div>
       <div class="receiveInfo">
         寄送至:
-        <span>{{ userDefaultAddress.userAddress  }}</span>
+        <span>{{ userDefaultAddress.userAddress }}</span>
         收货人：<span>{{ userDefaultAddress.consignee }}</span>
         <span>{{ userDefaultAddress.phoneNum }}</span>
       </div>
     </div>
     <div class="sub clearFix">
-      <router-link class="subBtn" to="/pay">提交订单</router-link>
+      <a class="subBtn" @click="submitOrder">提交订单</a>
     </div>
   </div>
 </template>
@@ -95,9 +127,10 @@ export default {
   name: "TradE",
   data() {
     return {
-      massage: '',
-      num: ''
-    }
+      massage: "",
+      num: "",
+      orderId: ""
+    };
   },
   methods: {
     // 点击改变地址回调
@@ -114,12 +147,37 @@ export default {
     // 支付方式
     isPay(sum) {
       // console.log(sum);
-      if(sum == 1){
-        this.num = 1
-      }else{
-        this.num = 0
+      if (sum == 1) {
+        this.num = 1;
+      } else {
+        this.num = 0;
       }
-    }
+    },
+    async submitOrder() {
+      // console.log(this.$API); //以后没有vuex就用这种方法 全局事件总线
+      // 交易编码
+      let { tradeNo} = this.orderInfo
+      // 交易信息
+      let data = {
+        consignee: this.userDefaultAddress.consignee,    //最终收件人名字
+        consigneeTel: this.userDefaultAddress.phoneNum,  //手机号
+        deliveryAddress: this.userDefaultAddress.userAddress,  //地址
+        paymentWay: "ONLINE", //支付方式
+        orderComment: this.massage,  //留言
+        orderDetailList: this.orderInfo.detailArrayList   //购买的产品
+      };
+      // 调用接口 把数据传过去
+      let dyc = await this.$API.reqSubnitOrder(tradeNo, data)
+      // console.log(dyc);
+      if(dyc.code == 200){
+        this.orderId = dyc.data     //把订单号存到本地
+        // 进行路由跳转，把订单id传过去
+        this.$router.push('/pay?orderId='+this.orderId)
+      }else{
+        alert(dyc.data)    //提交订单失败
+      }
+      console.log(this.orderId);
+    },
   },
   mounted() {
     // 获取用户地址信息
@@ -135,17 +193,17 @@ export default {
     // 计算出将来订单最终的地址
     userDefaultAddress() {
       // find查找数组当中符合条件的元素返回，做为最终结果
-      return this.addressInfo.find((item) =>item.isDefault == 1 ) || {};   //数据刚开始是空的
+      return this.addressInfo.find((item) => item.isDefault == 1) || {}; //数据刚开始是空的
     },
   },
 };
 </script>
 
 <style lang="less" scoped>
-.remarks-cont{
+.remarks-cont {
   padding-left: 5px;
 }
-.oredrImg{
+.oredrImg {
   width: 100px;
   height: 100px;
 }

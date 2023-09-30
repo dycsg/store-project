@@ -9,6 +9,7 @@
       <div class="paydetail">
         <p class="button">
           <router-link class="btn-look" to="/center">查看订单</router-link>
+          <!-- <router-link  to="/center">查看订单</router-link> -->
           <router-link class="btn-goshop" to="/">继续购物</router-link>
         </p>
       </div>
@@ -20,6 +21,16 @@
 <script>
   export default {
     name: 'PaySuccess',
+    // 组件内守卫
+    beforeRouteEnter: (to, from, next) =>{
+      // 如果是从pay组件跳转的 就进行放行
+      if(from.path == "/pay"){
+        next()
+      }else{
+        // 别的就停留在当前组件
+        next(from.path)
+      }
+    }
   }
 </script>
 

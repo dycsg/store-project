@@ -60,3 +60,12 @@ export const reqOrderInfo = () => requests({ url: '/order/auth/trade', method: '
 
 // 提交订单 /api/order/auth/submitOrder?tradeNo={tradeNo}     除了订单号 其他已data形式传
 export const reqSubnitOrder = (tradeNo,data) => requests({ url: `/order/auth/submitOrder?tradeNo=${tradeNo}`,data, method: 'POST' })
+
+//获取订单信息 /api/payment/weixin/createNative/{orderId}
+export const reqPayInfo = (orderId) => requests({ url: `/payment/weixin/createNative/${orderId}`, method: "GET"})
+
+// 查询支付订单状态 /api/payment/weixin/queryPayStatus/{orderId}
+export const reqPayStatus = (orderId) => requests({ url: `/payment/weixin/queryPayStatus/${orderId}`,method: "GET"})
+
+// 我的订单列表接口  /api/order/auth/{page}/{limit}
+export const reqMyOrderList = (page, limit) => requests({ url: `/order/auth/${page}/${limit}`, method: "GET"})

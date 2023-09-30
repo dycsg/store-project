@@ -60,35 +60,6 @@ router.beforeEach(async (to, from, next) => {
   // next();
   // console.log(to, from, next);
   // console.log(store);
-  // 用户已经登入了
-  // if(token){
-  //   // 判断 用户点击的是登录路由 因为用户已经登录了就不要进行路由跳转让它放行到myhome首页路由
-  //   if(to.path =='/mylogin'){
-  //     // 放行到myhome首页路由
-  //     next('/myhome');
-  //   }else{
-  //     // 点击的是任意路由除了mylogin路由
-  //     if(name){
-  //       //  判断用户有用户信息（name）属性 进行放行
-  //       next()
-  //     }else{
-  //       try {
-  //         // 判断 仓库里面没有用户信息（name）属性 就需要使用服务器返回的token再调用获取用户信息的函数
-  //         await store.dispatch('getUserInfo')
-  //         // 调取到了放行
-  //         next();
-  //       } catch (error) {
-  //         // token没有用了失效了，需要删除token删除用户信息，直接调用仓库删除信息函数
-  //         await store.dispatch('userLogout')
-  //         // 再让用户重新登录
-  //         next('/mylogin');
-  //       }
-  //     }
-  //   }
-  // }else{
-  //   // 用户没有登入
-  // }
-  // console.log(store);
   let token = store.state.user.token;
   let name = store.state.user.userInfo.name;
   // console.log(name);
@@ -111,14 +82,23 @@ router.beforeEach(async (to, from, next) => {
         } catch (error) {
           // 用户点击的是其他页面搜索购物车  但是token失效了 调用仓库的删除用户信息接口
           await store.dispatch('UserLogout')
-          // 让用户重新登录
+          // 让用户重新登录 
           next('/mylogin')
         }
       }
     }
   } else {
-    // 用户没有登录
-    next();
+    // 用户没有登录,不能去交易相关组件trade，以及支付相关pay paysuccess
+    let toPath = to.path     //获取到用户去的是哪理
+    // 没有登入去的是这些组件，得让它去登录组件    判断如果有字符串理有pay
+    if(toPath == '/trade' || toPath.indexOf('/pay') != -1 || toPath.indexOf('/center') != -1){
+      // 把未登录的时候想去而没有去成的路由组件，存储路由信息于地址栏中query     
+      
+      next('/mylogin?redirect='+toPath)
+    }else {
+      // 没有登入去的是home 搜索 购物车 可以进行放行
+      next()
+    }
   }
 });
 

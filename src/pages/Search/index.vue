@@ -87,7 +87,8 @@
                   <div class="p-img">
                     <!-- 在路由path:占位 这里把商品的id传过去 -->
                     <router-link :to="`/detail/${item.id}`">
-                      <img :src="item.defaultImg" alt="" />
+                      <!-- v-lazy图片懒加载 -->
+                      <img v-lazy="item.defaultImg" alt="" />
                     </router-link>
                   </div>
                   <div class="price">
